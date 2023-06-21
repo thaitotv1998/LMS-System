@@ -2,12 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace LMS_System.Repositories
+namespace LMS_System.RepoCore
 {
     public class RepositoyBase<T> : IRepository<T> where T : class
     {
         private readonly ApplicationDbContext _context;
-        private readonly DbSet<T> _dbSet;
+        protected readonly DbSet<T> _dbSet;
 
         protected RepositoyBase(ApplicationDbContext context)
         {
@@ -21,6 +21,12 @@ namespace LMS_System.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task Update(T entity)
+        {
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task Delete(T entity)
         {
             _dbSet.Remove(entity);
@@ -29,12 +35,10 @@ namespace LMS_System.Repositories
 
         public async Task<List<T>> GetAll() => await _dbSet.ToListAsync();
 
-        public async Task<List<T>> GetByCondition(Expression<Func<T, bool>> expression) => await _dbSet.Where(expression).ToListAsync();
+        public async Task<T> GetByCondition(Expression<Func<T, bool>> expression) => await _dbSet.Where(expression).FirstAsync();
 
-        public async Task Update(T entity)
-        {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
-        }
+        public async Task<T> GetById(object Id) => await _dbSet.FindAsync(Id);
+
+        public bool Any(Expression<Func<T, bool>> where) => _dbSet.Where(where).Any();
     }
 }
