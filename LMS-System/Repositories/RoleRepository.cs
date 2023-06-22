@@ -54,10 +54,10 @@ namespace LMS_System.Repositories
         public async Task UpdateRole(string oldRole, RoleDTO role)
         {
             var checkRole = await _dbSet.FirstOrDefaultAsync(r => r.RoleName == oldRole);
+            _mapper.Map(role, checkRole);
             if (checkRole != null)
             {
-                var updateRole = _mapper.Map<Role>(role);
-                await Update(updateRole);
+                await Update(checkRole);
             }
         }
     }

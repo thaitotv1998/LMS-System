@@ -1,7 +1,6 @@
 ﻿using LMS_System.Models;
 using LMS_System.Repositories.IRepositories;
 using LMS_System.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LMS_System.Controllers
@@ -52,14 +51,14 @@ namespace LMS_System.Controllers
         }
 
         [HttpPut("role-name")]
-        public async Task<IActionResult> UpdateRole(string oldRole, RoleDTO role)
+        public async Task<IActionResult> UpdateRole(string oldRole,[FromBody] RoleDTO role)
         {
             var checkRole = await _roleRepository.GetRoleByName(oldRole);
             if (checkRole == null)
             {
                 return NotFound("Role not found");
             }
-            var checkExists = await _roleRepository.GetRoleByName(role.RoleName ?? "");
+            var checkExists = await _roleRepository.GetRoleByName(role.RoleName);
             if (checkExists != null)
             {
                 return BadRequest("Role existed!");
