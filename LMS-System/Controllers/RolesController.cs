@@ -13,7 +13,6 @@ namespace LMS_System.Controllers
 
         public RolesController(IRoleRepository roleRepository)
         {
-
             _roleRepository = roleRepository;
         }
 

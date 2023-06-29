@@ -1,4 +1,5 @@
 using LMS_System.Context;
+using LMS_System.Helpers;
 using LMS_System.Repositories;
 using LMS_System.Repositories.IRepositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,22 +23,25 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.SaveToken = true;
-    options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new TokenValidationParameters
+})
+    .AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        ValidAudience= builder.Configuration["JWT:ValidAudience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-    };
-});
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+            ValidAudience= builder.Configuration["JWT:ValidAudience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
+            ValidateLifetime =  true
+        };
+    });
 builder.Services.AddAutoMapper(typeof(Program));
 
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>()
+                .AddScoped<IClassRepository, ClassRepository>();
 
 var app = builder.Build();
 
@@ -49,6 +53,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

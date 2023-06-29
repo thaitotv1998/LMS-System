@@ -13,7 +13,7 @@ namespace LMS_System.Models
         [MaxLength(255)]
         public string? Username { get; set; }
         [Required]
-        [Range(8,100)]
+        [Range(8,20)]
         public string? Password { get; set; }
         [EmailAddress(ErrorMessage ="Invalid email")]
         public string? Email { get; set; }
@@ -22,6 +22,8 @@ namespace LMS_System.Models
         [DefaultValue(true)]
         public bool Gender { get; set; }
         public string? Address { get; set; }
+        [DefaultValue(false)]
+        public bool IsActivated { get; set; } = false;
         public Guid RoleId { get; set; }
 
         [ForeignKey("RoleId")]

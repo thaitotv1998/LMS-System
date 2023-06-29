@@ -11,7 +11,7 @@ namespace LMS_System.Models
         [Required]
         [MaxLength(7)]
         public string? ClassName { get; set; }
-        public DateTime SchoolYear { get; set; }
+        public int SchoolYear { get; set; }
 
     }
 }
